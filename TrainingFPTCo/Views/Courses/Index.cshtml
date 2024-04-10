@@ -1,0 +1,90 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model TrainingFPTCo.Models.CourseViewModel
+
+@{
+    ViewData["title"] = "Courses";
+    ViewData["breadcrumb"] = "Home";
+    ViewData["breadcrumb_active"] = "Courses";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+
+    bool saveStatus   = Convert.ToBoolean(TempData["saveStatus"]);
+    bool updateStatus = Convert.ToBoolean(TempData["updateStatus"]);
+    // lay ra giay o thoi diem hien tai
+    var Timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+}
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <h3 class="text-center"> This is Courses page !</h3>
+        <a class="btn btn-primary" href="@Url.Action("Add", "Courses")"> Add new Courses</a>
+        @if (TempData["saveStatus"] != null)
+        {
+            @if (saveStatus)
+            {
+                <div class="text-success my-3"> Add Successfully</div>   
+            }
+            else
+            {
+                <div class="text-danger my-3"> Add Failure</div>
+            }
+        }
+        @if (TempData["updateStatus"] != null)
+        {
+            @if (updateStatus)
+            {
+                <div class="text-success my-3"> Update Successfully</div>
+            }
+            else
+            {
+                <div class="text-danger my-3"> Update Failure</div>
+            }
+        }
+
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th width="10%" class="text-center" colspan="2">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CourseDetailsList)
+                {
+                    <tr class="row-course-@item.Id">
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.ViewCategoryName</td>
+                        <td width="15%">
+                            <img class="img-fluid img-thumbnail" alt="@item.Name" src="/uploads/images/@item.ViewImageCouser" />
+                        </td>
+                        <td>@item.Description</td>
+                        <td>@item.ViewStartDate</td>
+                        <td>@item.ViewEndDate</td>
+                        <td>@item.Status</td>
+                        <td>
+                            <a class="btn btn-info btn-sm" href="@Url.Action("Update", "Courses",new {id = item.Id})"> Edit</a>
+                        </td>
+                        <td>
+                            <button id="@item.Id" class="btn btn-danger btn-sm js-delete-course"> Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section javascripts
+{
+    <script src="/js/course.js?v=@Timestamp"></script>
+}
